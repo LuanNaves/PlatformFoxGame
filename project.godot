@@ -10,10 +10,14 @@ config_version=5
 
 [application]
 
-config/name="New Platformer Game"
+config/name="Fox x Frogs"
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
-config/icon="res://icon.svg"
+
+[autoload]
+
+Game="*res://scripts/global/game.gd"
+Utils="*res://scripts/global/utils.gd"
 
 [rendering]
 

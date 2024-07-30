@@ -1,10 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://br21w8sn5vfum"]
+[gd_scene load_steps=12 format=3 uid="uid://br21w8sn5vfum"]
 
 [ext_resource type="Texture2D" uid="uid://caxkyaxqofoch" path="res://assets/Sunny Land Collection Files/Assets/Packs/Sunnyland/environment/tileset.png" id="1_eeg7v"]
 [ext_resource type="PackedScene" uid="uid://bf4ptbk3jmbwt" path="res://scenes/player.tscn" id="1_lwnl6"]
 [ext_resource type="Script" path="res://scripts/background.gd" id="2_yx2pq"]
 [ext_resource type="Texture2D" uid="uid://cayq7k7b6p6pi" path="res://assets/Sunny Land Collection Files/Assets/Packs/Sunnyland/environment/Background/back.png" id="3_ajb41"]
-[ext_resource type="PackedScene" uid="uid://ctwbds06ricol" path="res://scenes/frog.tscn" id="5_owv4a"]
+[ext_resource type="Script" path="res://scripts/mobs.gd" id="5_6452b"]
+[ext_resource type="Script" path="res://scripts/collectables.gd" id="6_28twa"]
+[ext_resource type="AudioStream" uid="uid://c3sd0w1bxfx2q" path="res://assets/SunnyLand Music/Adventure pack 1 ogg/happywalking.ogg" id="7_8v6sy"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gv1h1"]
 texture = ExtResource("1_eeg7v")
@@ -413,7 +415,19 @@ sources/0 = SubResource("TileSetAtlasSource_gv1h1")
 resource_name = "HP"
 script/source = "extends Label
 
-@onready var player = $\"../../Player/Player\"
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	text = \"HP: \" + str(Game.player_hp)
+"
+
+[sub_resource type="GDScript" id="GDScript_6whbv"]
+resource_name = "HP"
+script/source = "extends Label
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -422,7 +436,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	text = \"HP: \" + str(player.health)
+	text = \"Gold: \" + str(Game.gold)
 "
 
 [node name="World" type="Node2D"]
@@ -451,45 +465,46 @@ metadata/_edit_lock_ = true
 position = Vector2(122, 102)
 
 [node name="Mobs" type="Node" parent="."]
+script = ExtResource("5_6452b")
 
-[node name="Frog" parent="Mobs" instance=ExtResource("5_owv4a")]
-position = Vector2(473, 422)
-
-[node name="Frog2" parent="Mobs" instance=ExtResource("5_owv4a")]
-position = Vector2(534, 318)
-
-[node name="Frog3" parent="Mobs" instance=ExtResource("5_owv4a")]
-position = Vector2(1239, 376)
-
-[node name="Frog4" parent="Mobs" instance=ExtResource("5_owv4a")]
-position = Vector2(1120, 422)
-
-[node name="Frog5" parent="Mobs" instance=ExtResource("5_owv4a")]
-position = Vector2(1017, 372)
-
-[node name="Frog6" parent="Mobs" instance=ExtResource("5_owv4a")]
-position = Vector2(848, 410)
-
-[node name="Frog7" parent="Mobs" instance=ExtResource("5_owv4a")]
-position = Vector2(145, 409)
-
-[node name="Frog8" parent="Mobs" instance=ExtResource("5_owv4a")]
-position = Vector2(361, 379)
-
-[node name="Frog9" parent="Mobs" instance=ExtResource("5_owv4a")]
-position = Vector2(639, 437)
-
-[node name="Frog10" parent="Mobs" instance=ExtResource("5_owv4a")]
-position = Vector2(722, 369)
+[node name="Timer" type="Timer" parent="Mobs"]
+wait_time = 3.0
+autostart = true
 
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="HP" type="Label" parent="UI"]
 texture_filter = 1
-offset_left = 1.0
-offset_right = 85.0
-offset_bottom = 57.0
+offset_left = 7.0
+offset_top = 5.0
+offset_right = 91.0
+offset_bottom = 62.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
 text = "HP:"
 script = SubResource("GDScript_pnfa6")
+
+[node name="Gold" type="Label" parent="UI"]
+texture_filter = 1
+offset_left = 4.0
+offset_top = 43.0
+offset_right = 85.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 32
+text = "Gold:"
+script = SubResource("GDScript_6whbv")
+
+[node name="Collectables" type="Node" parent="."]
+script = ExtResource("6_28twa")
+
+[node name="Timer" type="Timer" parent="Collectables"]
+wait_time = 3.0
+autostart = true
+
+[node name="WorldMusic" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("7_8v6sy")
+autoplay = true
+
+[connection signal="timeout" from="Mobs/Timer" to="Mobs" method="_on_timer_timeout"]
+[connection signal="timeout" from="Collectables/Timer" to="Collectables" method="_on_timer_timeout"]
