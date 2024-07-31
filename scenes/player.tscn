@@ -293,7 +293,7 @@ animation = &"idle"
 zoom = Vector2(1.6, 1.6)
 limit_left = 0
 limit_top = 0
-limit_right = 2000
+limit_right = 2015
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
